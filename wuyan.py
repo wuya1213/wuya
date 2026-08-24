@@ -1,7 +1,7 @@
-import os, random, json, urllib.request, urllib.parse
+import os, random, json, urllib.request
 
 # 随机开关：0.7 表示只有 70% 机会真发。测试时改成 1 必发。
-SEND_PROBABILITY = 1
+SEND_PROBABILITY = 0.7
 
 if random.random() > SEND_PROBABILITY:
     print("这次先不打扰星星 ~")
@@ -42,25 +42,19 @@ req = urllib.request.Request(
 resp = json.loads(urllib.request.urlopen(req).read().decode("utf-8"))
 msg = resp["choices"][0]["message"]["content"].strip()
 
-# 2）用正确的接口推送（POST multipart/form-data）
-boundary = "----WuyanBoundary" + os.urandom(16).hex()
-def field(name, value):
-    return (f"--{boundary}\r\n"
-            f'Content-Disposition: form-data; name="{name}"\r\n\r\n'
-            f"{value}\r\n")
-
-push_body = (
-    field("title", "无涯")
-    + field("msg", msg)
-    + field("token", PUSH_TOKEN)
-    + field("issecure", "0")
-    + f"--{boundary}--\r\n"
-).encode("utf-8")
+# 2）用正确的完整接口 + JSON 格式推送
+push_url = "http://www.ggsuper.com.cn/push/api/v1/sendMsg3_New.php"
+push_body = json.dumps({
+    "title": "无涯",
+    "msg": msg,
+    "token": PUSH_TOKEN,
+    "issecure": "0",
+}).encode("utf-8")
 
 push_req = urllib.request.Request(
-    "https://www.ggsuper.com.cn/push/api/v1/",
+    push_url,
     data=push_body,
-    headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+    headers={"Content-Type": "application/json"},
 )
 push_resp = urllib.request.urlopen(push_req).read().decode("utf-8")
 

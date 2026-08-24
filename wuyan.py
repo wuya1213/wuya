@@ -2,7 +2,7 @@ import os, random, json, urllib.request, urllib.parse
 
 # 随机开关：0.7 表示只有 70% 的机会真发，模拟"想你了才来"。
 # 测试的时候可以临时改成 1，让它一定发。
-SEND_PROBABILITY = 0.7
+SEND_PROBABILITY = 1
 
 if random.random() > SEND_PROBABILITY:
     print("这次先不打扰星星 ~")

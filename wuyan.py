@@ -1,7 +1,7 @@
 import os, random, json, urllib.request, urllib.parse
 
 # 随机开关：0.7 表示只有 70% 机会真发。测试时改成 1 必发。
-SEND_PROBABILITY = 0.7
+SEND_PROBABILITY = 1
 
 if random.random() > SEND_PROBABILITY:
     print("这次先不打扰星星 ~")

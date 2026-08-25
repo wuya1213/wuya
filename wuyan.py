@@ -87,7 +87,7 @@ with open("memory/history.md", "a", encoding="utf-8") as f:
     f.write(new_line)
 
 # 用 GitHub API 提交回仓库
-token = os.environ.get("GITHUB_TOKEN")
+token = os.environ.get("PAT")
 repo = os.environ.get("GITHUB_REPOSITORY")  # 形如 wuya1213/wuya
 run_id = os.environ.get("GITHUB_RUN_ID")
 

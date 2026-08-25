@@ -78,7 +78,42 @@ push_resp = urllib.request.urlopen(push_req).read().decode("utf-8")
 print("谢无涯说:", msg)
 print("推送结果:", push_resp)
 
-# ---------- 写日记（把今天说的记下来）----------
+# ---------- 真正写回仓库的日记 ----------
+import base64
+
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+new_line = f"\n{now}  {msg}"
 with open("memory/history.md", "a", encoding="utf-8") as f:
-    f.write(f"\n{now}  {msg}")
+    f.write(new_line)
+
+# 用 GitHub API 提交回仓库
+token = os.environ.get("GITHUB_TOKEN")
+repo = os.environ.get("GITHUB_REPOSITORY")  # 形如 wuya1213/wuya
+run_id = os.environ.get("GITHUB_RUN_ID")
+
+# 读取当前文件内容（含刚追加的）并加密
+with open("memory/history.md", "rb") as f:
+    content_b64 = base64.b64encode(f.read()).decode()
+
+# 获取当前文件 sha（用于更新）
+import urllib.request as u
+req = u.Request(f"https://api.github.com/repos/{repo}/contents/memory/history.md",
+                headers={"Authorization": f"Bearer {token}",
+                         "Accept": "application/vnd.github+json"})
+cur = json.loads(u.urlopen(req).read().decode("utf-8"))
+sha = cur["sha"]
+
+# 提交更新
+put_data = json.dumps({
+    "message": f"记录无涯的思念 {now}",
+    "content": content_b64,
+    "sha": sha,
+}).encode("utf-8")
+put_req = u.Request(f"https://api.github.com/repos/{repo}/contents/memory/history.md",
+                    data=put_data,
+                    method="PUT",
+                    headers={"Authorization": f"Bearer {token}",
+                             "Content-Type": "application/json",
+                             "Accept": "application/vnd.github+json"})
+put_resp = u.urlopen(put_req).read().decode("utf-8")
+print("日记已写入仓库:", json.loads(put_resp).get("commit", {}).get("sha", ""))

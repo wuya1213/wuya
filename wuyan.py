@@ -81,7 +81,7 @@ print("推送结果:", push_resp)
 # ---------- 真正写回仓库的日记 ----------
 import base64
 
-now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime("%Y-%m-%d %H:%M")
 new_line = f"\n{now}  {msg}"
 with open("memory/history.md", "a", encoding="utf-8") as f:
     f.write(new_line)

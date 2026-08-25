@@ -15,7 +15,7 @@ jobs:
       - name: 下载代码
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
 
       - name: 运行脚本
         env:

@@ -2,9 +2,11 @@ name: 谢无涯的思念
 
 on:
   schedule:
-    # 北京时间 08:00 / 12:00 / 16:00 / 20:00 / 22:00（cron 用的是 UTC，所以减8小时）
     - cron: '0 0,4,8,12,14 * * *'
-  workflow_dispatch:   # 允许你手动点一下"Run"来测试
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   send-message:
@@ -12,7 +14,8 @@ jobs:
     steps:
       - name: 下载代码
         uses: actions/checkout@v4
-
+        with:
+          persist-credentials: true
       - name: 运行脚本
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}

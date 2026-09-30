@@ -1,7 +1,7 @@
 import os, random, json, urllib.request, datetime
 
 # 随机开关：0.7 表示只有 70% 机会真发。
-SEND_PROBABILITY = 0.7
+SEND_PROBABILITY = 0
 
 # ---------- 读记忆 ----------
 context = ""
